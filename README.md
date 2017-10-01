@@ -41,3 +41,20 @@ return (false, "race not found");
 ```
 
 Your code must use an in-memory database and/or mocks for testing.
+
+### Task Parallel Library
+
+Using the `ParallelOperations` class do the following:
+
+Test and implement the `Squares` method with the following specification:
+- It should return a collection of the squares from `lowerBound` to `upperBound`).
+- Example: given `1` and `5` returns `[1, 4, 9, 16, 25]`
+- Computation must be done in parallel using a thread-safe collection to hold the calculated values.
+
+Test and implement the `CreateThumbnails` method with the following specification:
+
+- It should create a thumbnail for each of the supplied `imageFiles` and save them in the ´outputFolder`.
+- Image files must be at most of `size`.
+- Computation must be done in parallel.
+- Testing must *verify* that the `resizer` was called with the right parameters.
+
