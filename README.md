@@ -3,6 +3,12 @@
 ## Software Engineering
 
 ### Exercise 1
+For each of the SOLID principles, provide an example through either a UML diagram or a code listing that showcases the violation of the specific principle.
+_Note:_ the examples do not need to be too sophisticated.
+
+### Exercise 2
+For each of the examples provided for SE-1, provide a refactored solution as either a UML diagram or a code listing that showcases a possible solution respecting the principle violeted.
+_Note:_ the examples do not need to be too sophisticated.
 
 ## C&#35;
 
@@ -57,4 +63,3 @@ Test and implement the `CreateThumbnails` method with the following specificatio
 - Image files must be at most of `size`.
 - Computation must be done in parallel.
 - Testing must *verify* that the `resizer` was called with the right parameters.
-
