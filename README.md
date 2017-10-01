@@ -7,7 +7,7 @@ For each of the SOLID principles, provide an example through either a UML diagra
 _Note:_ the examples do not need to be too sophisticated.
 
 ### Exercise 2
-For each of the examples provided for SE-1, provide a refactored solution as either a UML diagram or a code listing that showcases a possible solution respecting the principle violeted in the specific example.
+For each of the examples provided for SE-1, provide a refactored solution as either a UML diagram or a code listing that showcases a possible solution respecting the principle violeted.
 _Note:_ the examples do not need to be too sophisticated.
 
 ## C&#35;
