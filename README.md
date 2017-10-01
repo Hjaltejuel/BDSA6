@@ -1,2 +1,7 @@
-# BDSA2017.Assignment06
-Assignment 6
+# Assignment #6: Week 40
+
+## Software Engineering
+
+### Exercise 1
+
+## C&#35;
