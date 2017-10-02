@@ -4,7 +4,7 @@ using System.Drawing;
 
 namespace BDSA2017.Assignment06
 {
-    public class PictureModule
+    public class PictureModule : IPictureModule
     {
         public void Resize(string inputFile, string outputFile, Size size)
         {
