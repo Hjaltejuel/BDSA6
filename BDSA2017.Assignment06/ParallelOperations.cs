@@ -10,20 +10,25 @@ namespace BDSA2017.Assignment06
     {
         public static ICollection<long> Squares(long lowerBound, long upperBound)
         {
-            BlockingCollection<long> blockingCollection = new BlockingCollection<long>();
-            Parallel.For(0, upperBound, i =>
+            ConcurrentQueue<long> ConcurrentQueue = new ConcurrentQueue<long>();
+            Parallel.For(lowerBound, upperBound+1, i =>
              {
 
                  long x = (long)Math.Pow(i, 2);
-                 blockingCollection.Add((long)Math.Pow(i, 2));
+                 ConcurrentQueue.Enqueue((long)Math.Pow(i, 2));
                
              });
-            return blockingCollection.ToArray();
+            long[] converted = ConcurrentQueue.ToArray();
+            Array.Sort(converted);
+            return converted;
         }
 
         public static void CreateThumbnails(IPictureModule resizer, IEnumerable<string> imageFiles, string outputFolder, Size size)
         {
-            throw new NotImplementedException();
+            Parallel.ForEach(imageFiles, file =>
+             {
+                 resizer.Resize(file, outputFolder, size);
+             });
         }
     }
 }

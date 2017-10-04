@@ -1,6 +1,4 @@
-using BDSA2017.Assignment05.Entities;
-using BDSA2017.Assignment05;
-using Xunit;
+﻿using Xunit;
 using System.Linq;
 using System;
 using Microsoft.Data.Sqlite;
@@ -8,6 +6,9 @@ using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using BDSA2017.Assignment06.Entities;
 using BDSA2017.Assignment06.DTOs;
+using BDSA2017.Assignment05.Entities;
+using System.IO;
+using System.Drawing;
 
 namespace BDSA2017.Assignment06.Tests
 {
@@ -24,11 +25,24 @@ namespace BDSA2017.Assignment06.Tests
             raceRepository = new RaceRepository(context);
 
         }
+
+        [Fact]
+        public void TestSquared()
+        {
+            Assert.Equal(new long[] { 1, 4, 9, 16, 25 }, ParallelOperations.Squares(1, 5));
+        }
+        [Fact]
+        public void TestRezized()
+        {
+            IEnumerable<string> test = Directory.GetFiles(@"C:\Users\Hjalte\Source\Repos\BDSA2017.Assignment06\BDSA2017.Assignment06\images");
+            ParallelOperations.CreateThumbnails(new PictureModule(), test, @"C:\Users\Hjalte\Source\Repos\BDSA2017.Assignment06\BDSA2017.Assignment06\imageRezized", new Size(100, 100));
+            Assert.False(true);
+        }
         [Fact]
         public async void TestUpdateCarInRaceAsync()
         {
             Car car = new Car() { Driver = "Mads", Name = "Suzuki" };
-      
+
             var track = new Track()
             {
                 BestTime = 121213123,
@@ -58,7 +72,7 @@ namespace BDSA2017.Assignment06.Tests
 
             };
             await raceRepository.UpdateCarInRaceAsync(UpdatedCarInRaceInfo);
-            Assert.Equal(UpdatedCarInRaceInfo.EndPosition,context.CarsInRace.Find(carInRace.RaceId,carInRace.CarId).EndPosition);
+            Assert.Equal(UpdatedCarInRaceInfo.EndPosition, context.CarsInRace.Find(carInRace.RaceId, carInRace.CarId).EndPosition);
             Assert.Equal(UpdatedCarInRaceInfo.FastestLap, context.CarsInRace.Find(carInRace.RaceId, carInRace.CarId).FastestLap);
             Assert.Equal(UpdatedCarInRaceInfo.TotalTime, context.CarsInRace.Find(carInRace.RaceId, carInRace.CarId).TotalTime);
             Assert.Equal(UpdatedCarInRaceInfo.StartPosition, context.CarsInRace.Find(carInRace.RaceId, carInRace.CarId).StartPosition);
@@ -107,14 +121,14 @@ namespace BDSA2017.Assignment06.Tests
         }
         [Fact]
         public async void TestUpdateRaceNotFound()
-        {        
+        {
             var race = new Race()
             {
                 NumberOfLaps = 5,
                 PlannedEnd = new DateTime(1920, 11, 11),
-                PlannedStart = new DateTime(1920, 11, 11),           
+                PlannedStart = new DateTime(1920, 11, 11),
             };
-           
+
             var RaceCreate = new RaceCreateDTO()
             {
                 Id = race.Id,
@@ -124,8 +138,8 @@ namespace BDSA2017.Assignment06.Tests
                 ActualEnd = new DateTime(1221, 1, 1),
                 ActualStart = new DateTime(2412, 2, 2)
             };
-            
-            Assert.Equal((false, "no race found"),await raceRepository.UpdateAsync(RaceCreate));
+
+            Assert.Equal((false, "no race found"), await raceRepository.UpdateAsync(RaceCreate));
         }
 
 
@@ -160,10 +174,10 @@ namespace BDSA2017.Assignment06.Tests
                 TrackId = race.Track.Id
             };
 
-            Assert.Equal( raceCreate, await raceRepository.ReadAsync(race.Id));
+            Assert.Equal(raceCreate, await raceRepository.ReadAsync(race.Id));
 
         }
-        [Fact] 
+        [Fact]
         public async void TestReadList()
         {
             Car car = new Car() { Driver = "Mads", Name = "Suzuki" };
@@ -234,9 +248,9 @@ namespace BDSA2017.Assignment06.Tests
                 context.Add(carInRace);
                 context.SaveChanges();
                 await raceRepository.RemoveCarFromRaceAsync(car.Id, race.Id);
-               
 
-                Assert.Null(context.CarsInRace.Find(carInRace.CarId,carInRace.RaceId));
+
+                Assert.Null(context.CarsInRace.Find(carInRace.CarId, carInRace.RaceId));
 
             }
         }
@@ -283,21 +297,21 @@ namespace BDSA2017.Assignment06.Tests
                 };
                 var race = new Race()
                 {
-                    
+
                     NumberOfLaps = 5,
                     PlannedEnd = new DateTime(1920, 11, 11),
                     PlannedStart = new DateTime(1920, 11, 11),
                     Track = track
                 };
-               
+
                 context.Cars.Add(car);
                 context.Races.Add(race);
                 context.SaveChanges();
                 await raceRepository.AddCarToRaceAsync(car.Id, race.Id, 5);
                 var carInRace = (from carInRaces in context.CarsInRace
-                                where carInRaces.CarId == car.Id && carInRaces.RaceId == race.Id
-                                select carInRaces).Count();
-                Assert.True(carInRace>0);
+                                 where carInRaces.CarId == car.Id && carInRaces.RaceId == race.Id
+                                 select carInRaces).Count();
+                Assert.True(carInRace > 0);
 
             }
         }
@@ -316,9 +330,9 @@ namespace BDSA2017.Assignment06.Tests
                 };
                 var race = new Race()
                 {
-                   
+
                     NumberOfLaps = 5,
-                    ActualStart = new DateTime(1231,04,11),
+                    ActualStart = new DateTime(1231, 04, 11),
                     PlannedEnd = new DateTime(1920, 11, 11),
                     PlannedStart = new DateTime(1920, 11, 11),
                     Track = track
@@ -326,8 +340,8 @@ namespace BDSA2017.Assignment06.Tests
                 context.Cars.Add(car);
                 context.Races.Add(race);
                 context.SaveChanges();
-                
-              
+
+
                 Assert.Equal((false, "Race or car not excisting or has started"), await raceRepository.AddCarToRaceAsync(car.Id, race.Id, 5));
 
             }
@@ -335,7 +349,7 @@ namespace BDSA2017.Assignment06.Tests
         [Fact]
         public async void TestCreateRace()
         {
-              using (raceRepository)
+            using (raceRepository)
             {
                 var track = new Track()
                 {
@@ -355,12 +369,12 @@ namespace BDSA2017.Assignment06.Tests
                     PlannedStart = new DateTime(1920, 11, 11),
                     TrackId = track.Id
                 };
-                
-                  Assert.NotNull(context.Races.Find(await raceRepository.CreateAsync(raceDTO)));
-               
+
+                Assert.NotNull(context.Races.Find(await raceRepository.CreateAsync(raceDTO)));
+
 
             }
-             
+
         }
         [Fact]
         public async void TestCreateRaceFailsStarted()
@@ -378,7 +392,7 @@ namespace BDSA2017.Assignment06.Tests
                 context.SaveChanges();
                 RaceCreateDTO raceDTO = null;
 
-                Assert.Equal(0,await raceRepository.CreateAsync(raceDTO));
+                Assert.Equal(0, await raceRepository.CreateAsync(raceDTO));
 
 
             }
@@ -387,10 +401,10 @@ namespace BDSA2017.Assignment06.Tests
         [Fact]
         public async void TestDeleteRace()
         {
-            
+
             using (raceRepository)
             {
-                
+
                 var track = new Track()
                 {
                     BestTime = 121213123,
@@ -410,17 +424,17 @@ namespace BDSA2017.Assignment06.Tests
                 context.Tracks.Add(track);
                 context.Races.Add(race);
                 context.SaveChanges();
-                Assert.Equal((false, "Race was not found or hasnt started yet"),await raceRepository.DeleteAsync(race.Id));
+                Assert.Equal((false, "Race was not found or hasnt started yet"), await raceRepository.DeleteAsync(race.Id));
 
             }
-           
+
 
         }
         [Fact]
         public async void TestDeleteRace2()
         {
 
-            
+
             using (raceRepository)
             {
 
@@ -441,12 +455,13 @@ namespace BDSA2017.Assignment06.Tests
                 context.Tracks.Add(track);
                 context.Races.Add(race);
                 context.SaveChanges();
-                Assert.Equal((true, ""),await raceRepository.DeleteAsync(race.Id));
+                Assert.Equal((true, ""), await raceRepository.DeleteAsync(race.Id));
 
             }
 
 
         }
+       
 
         public void Dispose()
         {
