@@ -24,7 +24,7 @@ namespace BDSA2017.Assignment06
         }
 
 
-        Task<(bool ok, string error)> IRaceRepository.AddCarToRaceAsync(int carId, int raceId, int? startPosition)
+        public Task<(bool ok, string error)> AddCarToRaceAsync(int carId, int raceId, int? startPosition)
         {
             return Task.Run<(bool, string)>(() =>
             {
@@ -32,7 +32,7 @@ namespace BDSA2017.Assignment06
             });
         }
 
-        Task<int> IRaceRepository.CreateAsync(RaceCreateDTO race)
+        public Task<int> CreateAsync(RaceCreateDTO race)
         {
             return Task.Run<int>(() =>
             {
@@ -40,7 +40,7 @@ namespace BDSA2017.Assignment06
             });
         }
 
-        Task<(bool ok, string error)> IRaceRepository.DeleteAsync(int raceId)
+        public Task<(bool ok, string error)> DeleteAsync(int raceId)
         {
             return Task.Run<(bool, string)>(() =>
             {
@@ -48,7 +48,7 @@ namespace BDSA2017.Assignment06
             });
         }
 
-        Task<IEnumerable<RaceListDTO>> IRaceRepository.ReadAsync()
+        public Task<IEnumerable<RaceListDTO>> ReadAsync()
         {
             return Task.Run<IEnumerable<RaceListDTO>>(() =>
             {
@@ -56,7 +56,7 @@ namespace BDSA2017.Assignment06
             });
         }
 
-        Task<RaceCreateDTO> IRaceRepository.ReadAsync(int raceId)
+        public Task<RaceCreateDTO> ReadAsync(int raceId)
         {
             return Task.Run<RaceCreateDTO>(() =>
             {
@@ -64,7 +64,7 @@ namespace BDSA2017.Assignment06
             });
         }
 
-        Task<(bool ok, string error)> IRaceRepository.RemoveCarFromRaceAsync(int carId, int raceId)
+        public Task<(bool ok, string error)> RemoveCarFromRaceAsync(int carId, int raceId)
         {
             return Task.Run<(bool, string)>(() =>
             {
@@ -72,7 +72,7 @@ namespace BDSA2017.Assignment06
             });
         }
 
-        Task<(bool ok, string error)> IRaceRepository.UpdateAsync(RaceCreateDTO race)
+        public Task<(bool ok, string error)> UpdateAsync(RaceCreateDTO race)
         {
             return Task.Run<(bool, string)>(() =>
             {
@@ -80,7 +80,7 @@ namespace BDSA2017.Assignment06
             });
         }
 
-        Task<(bool ok, string error)> IRaceRepository.UpdateCarInRaceAsync(RaceCarDTO car)
+        public Task<(bool ok, string error)> UpdateCarInRaceAsync(RaceCarDTO car)
         {
             return Task.Run<(bool, string)>(() =>
             {

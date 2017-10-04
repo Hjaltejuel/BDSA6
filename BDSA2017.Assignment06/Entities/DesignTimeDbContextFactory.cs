@@ -1,9 +1,11 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using BDSA2017.Assignment06.Entities;
+using Microsoft.Data.Sqlite;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Design;
 using Microsoft.Extensions.Configuration;
 using System.IO;
 
-namespace BDSA2017.Assignment06.Entities
+namespace BDSA2017.Assignment05.Entities
 {
     public class DesignTimeDbContextFactory : IDesignTimeDbContextFactory<SlotCarContext>
     {
@@ -11,7 +13,7 @@ namespace BDSA2017.Assignment06.Entities
         {
             var configuration = new ConfigurationBuilder()
                 .SetBasePath(Directory.GetCurrentDirectory())
-                .AddJsonFile("appsettings.json")
+                .AddJsonFile(@"C:\Users\Michelle\source\repos\BDSA2017.Assignment05\BDSA2017.Assignment05\appsettings.json")
                 .Build();
 
             var builder = new DbContextOptionsBuilder<SlotCarContext>();
@@ -22,5 +24,20 @@ namespace BDSA2017.Assignment06.Entities
 
             return new SlotCarContext(builder.Options);
         }
+
+
+        public SlotCarContext CreateDbContext()
+        {
+            var connection = new SqliteConnection("DataSource=:memory:");
+            connection.Open();
+            var builder = new DbContextOptionsBuilder<SlotCarContext>().UseSqlite(connection).Options;
+
+            var context = new SlotCarContext(builder);
+            context.Database.EnsureCreated();
+            return context;
+
+        }
+
+
     }
 }
