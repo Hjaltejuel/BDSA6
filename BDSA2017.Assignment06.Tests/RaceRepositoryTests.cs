@@ -65,7 +65,7 @@ namespace BDSA2017.Assignment06.Tests
 
         }
         [Fact]
-        public void TestUpdate()
+        public async void TestUpdate()
         {
             var track = new Track()
             {
@@ -102,11 +102,11 @@ namespace BDSA2017.Assignment06.Tests
                 ActualEnd = new DateTime(1221, 1, 1),
                 ActualStart = new DateTime(2412, 2, 2)
             };
-            raceRepository.Update(RaceCreate);
+            await raceRepository.UpdateAsync(RaceCreate);
             Assert.Equal(context.Races.Find(race.Id).Track, trackupdated);
         }
         [Fact]
-        public void TestUpdateRaceNotFound()
+        public async void TestUpdateRaceNotFound()
         {        
             var race = new Race()
             {
@@ -125,12 +125,12 @@ namespace BDSA2017.Assignment06.Tests
                 ActualStart = new DateTime(2412, 2, 2)
             };
             
-            Assert.Equal((false, "no race found"), raceRepository.Update(RaceCreate));
+            Assert.Equal((false, "no race found"),await raceRepository.UpdateAsync(RaceCreate));
         }
 
 
         [Fact]
-        public void TestRead()
+        public async void TestRead()
         {
             var track = new Track()
             {
@@ -160,11 +160,11 @@ namespace BDSA2017.Assignment06.Tests
                 TrackId = race.Track.Id
             };
 
-            Assert.Equal( raceCreate, raceRepository.Read(race.Id));
+            Assert.Equal( raceCreate, await raceRepository.ReadAsync(race.Id));
 
         }
         [Fact] 
-        public void TestReadList()
+        public async void TestReadList()
         {
             Car car = new Car() { Driver = "Mads", Name = "Suzuki" };
             Car car1 = new Car() { Driver = "Mads2", Name = "Suzuki" };
@@ -205,12 +205,12 @@ namespace BDSA2017.Assignment06.Tests
                 WinningDriver = car.Driver
             };
 
-            Assert.Equal(new List<RaceListDTO> { raceList }, raceRepository.Read());
+            Assert.Equal(new List<RaceListDTO> { raceList }, await raceRepository.ReadAsync());
 
         }
 
         [Fact]
-        public void TestRemoveCarFromRace()
+        public async void TestRemoveCarFromRace()
         {
             using (raceRepository)
             {
@@ -233,16 +233,15 @@ namespace BDSA2017.Assignment06.Tests
                 var carInRace = new CarInRace() { Car = car, Race = race };
                 context.Add(carInRace);
                 context.SaveChanges();
-                raceRepository.RemoveCarFromRace(car.Id, race.Id);
-                
-                var test = context.CarsInRace.Find(carInRace.CarId, carInRace.RaceId);
+                await raceRepository.RemoveCarFromRaceAsync(car.Id, race.Id);
+               
 
                 Assert.Null(context.CarsInRace.Find(carInRace.CarId,carInRace.RaceId));
 
             }
         }
         [Fact]
-        public void TestRemoveCarFromRaceReturnsCarDosntExist()
+        public async void TestRemoveCarFromRaceReturnsCarDosntExist()
         {
             using (raceRepository)
             {
@@ -265,12 +264,12 @@ namespace BDSA2017.Assignment06.Tests
                 context.Add(race);
                 context.Add(car);
 
-                Assert.Equal((false, "The choosen car was not in the choosen race"), raceRepository.RemoveCarFromRace(car.Id, race.Id));
+                Assert.Equal((false, "The choosen car was not in the choosen race"), await raceRepository.RemoveCarFromRaceAsync(car.Id, race.Id));
 
             }
         }
         [Fact]
-        public void TestAddCarToRace()
+        public async void TestAddCarToRace()
         {
             using (raceRepository)
             {
@@ -294,7 +293,7 @@ namespace BDSA2017.Assignment06.Tests
                 context.Cars.Add(car);
                 context.Races.Add(race);
                 context.SaveChanges();
-                raceRepository.AddCarToRace(car.Id, race.Id, 5);
+                await raceRepository.AddCarToRaceAsync(car.Id, race.Id, 5);
                 var carInRace = (from carInRaces in context.CarsInRace
                                 where carInRaces.CarId == car.Id && carInRaces.RaceId == race.Id
                                 select carInRaces).Count();
@@ -303,7 +302,7 @@ namespace BDSA2017.Assignment06.Tests
             }
         }
         [Fact]
-        public void TestAddCarToRaceFalseRaceHasStarted()
+        public async void TestAddCarToRaceFalseRaceHasStarted()
         {
             using (raceRepository)
             {
@@ -329,12 +328,12 @@ namespace BDSA2017.Assignment06.Tests
                 context.SaveChanges();
                 
               
-                Assert.Equal((false, "Race or car not excisting or has started"), raceRepository.AddCarToRace(car.Id, race.Id, 5));
+                Assert.Equal((false, "Race or car not excisting or has started"), await raceRepository.AddCarToRaceAsync(car.Id, race.Id, 5));
 
             }
         }
         [Fact]
-        public void TestCreateRace()
+        public async void TestCreateRace()
         {
               using (raceRepository)
             {
@@ -357,14 +356,14 @@ namespace BDSA2017.Assignment06.Tests
                     TrackId = track.Id
                 };
                 
-                  Assert.NotNull(context.Races.Find(raceRepository.Create(raceDTO)));
+                  Assert.NotNull(context.Races.Find(await raceRepository.CreateAsync(raceDTO)));
                
 
             }
              
         }
         [Fact]
-        public void TestCreateRaceFailsStarted()
+        public async void TestCreateRaceFailsStarted()
         {
             using (raceRepository)
             {
@@ -379,14 +378,14 @@ namespace BDSA2017.Assignment06.Tests
                 context.SaveChanges();
                 RaceCreateDTO raceDTO = null;
 
-                Assert.Equal(0,raceRepository.Create(raceDTO));
+                Assert.Equal(0,await raceRepository.CreateAsync(raceDTO));
 
 
             }
 
         }
         [Fact]
-        public void TestDeleteRace()
+        public async void TestDeleteRace()
         {
             
             using (raceRepository)
@@ -411,14 +410,14 @@ namespace BDSA2017.Assignment06.Tests
                 context.Tracks.Add(track);
                 context.Races.Add(race);
                 context.SaveChanges();
-                Assert.False(raceRepository.Delete(race.Id).ok);
+                Assert.Equal((false, "Race was not found or hasnt started yet"),await raceRepository.DeleteAsync(race.Id));
 
             }
            
 
         }
         [Fact]
-        public void TestDeleteRace2()
+        public async void TestDeleteRace2()
         {
 
             
@@ -442,7 +441,7 @@ namespace BDSA2017.Assignment06.Tests
                 context.Tracks.Add(track);
                 context.Races.Add(race);
                 context.SaveChanges();
-                Assert.True(raceRepository.Delete(race.Id).ok);
+                Assert.Equal((true, ""),await raceRepository.DeleteAsync(race.Id));
 
             }
 

@@ -116,18 +116,22 @@ namespace BDSA2017.Assignment06
             if (race != null)
             {
                 Track track = context.Tracks.Find(race.TrackId);
-                Race createdRace = new Race()
+                if (track != null)
                 {
-                    ActualEnd = race.ActualEnd,
-                    ActualStart = race.ActualStart,
-                    NumberOfLaps = race.NumberOfLaps,
-                    PlannedEnd = race.PlannedEnd,
-                    PlannedStart = race.PlannedStart,
-                    Track = track
-                };
-                context.Races.Add(createdRace);
-                context.SaveChanges();
-                return createdRace.Id;
+                    Race createdRace = new Race()
+                    {
+                        ActualEnd = race.ActualEnd,
+                        ActualStart = race.ActualStart,
+                        NumberOfLaps = race.NumberOfLaps,
+                        PlannedEnd = race.PlannedEnd,
+                        PlannedStart = race.PlannedStart,
+                        Track = track
+                    };
+                    context.Races.Add(createdRace);
+                    context.SaveChanges();
+                    return createdRace.Id;
+                }
+                return 0;
             }
             return 0;
 
@@ -183,7 +187,7 @@ namespace BDSA2017.Assignment06
         public RaceCreateDTO Read(int raceId)
         {
             Race race = context.Races.Find(raceId);
-
+            
             RaceCreateDTO raceList = new RaceCreateDTO
             {
                 ActualEnd = race.ActualEnd,
