@@ -10,6 +10,8 @@ using BDSA2017.Assignment05.Entities;
 using System.IO;
 using System.Drawing;
 using System.Threading.Tasks;
+using System.Reflection;
+using Moq;
 
 namespace BDSA2017.Assignment06.Tests
 {
@@ -35,8 +37,13 @@ namespace BDSA2017.Assignment06.Tests
         [Fact]
         public void TestRezized()
         {
-            IEnumerable<string> test = Directory.GetFiles(@"C:\Users\Hjalte\Source\Repos\BDSA2017.Assignment06\BDSA2017.Assignment06\images");
-            ParallelOperations.CreateThumbnails(new PictureModule(), test, @"C:\Users\Hjalte\Source\Repos\BDSA2017.Assignment06\BDSA2017.Assignment06\imageRezized", new Size(100, 100));
+            string directory = Directory
+            .GetParent(Assembly.GetExecutingAssembly().Location)
+            .Parent.Parent.Parent.Parent.FullName + @"\BDSA2017.Assignment06";
+            IEnumerable<string> test = Directory.GetFiles(directory + @"\images");
+            ParallelOperations.CreateThumbnails(new PictureModule(), test, directory + @"\imageRezized", new Size(1000, 1000));
+            var mock = new Mock<IPictureModule>();
+
             Assert.False(true);
         }
         [Fact]

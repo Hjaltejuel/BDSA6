@@ -25,9 +25,11 @@ namespace BDSA2017.Assignment06
 
         public static void CreateThumbnails(IPictureModule resizer, IEnumerable<string> imageFiles, string outputFolder, Size size)
         {
+            int i = 0;
             Parallel.ForEach(imageFiles, file =>
              {
-                 resizer.Resize(file, outputFolder, size);
+                 i++;
+                 resizer.Resize(file, outputFolder + @"\"+i+".jpg", size);
              });
         }
     }
