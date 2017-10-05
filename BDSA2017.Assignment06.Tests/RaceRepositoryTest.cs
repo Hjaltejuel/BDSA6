@@ -9,6 +9,7 @@ using BDSA2017.Assignment06.DTOs;
 using BDSA2017.Assignment05.Entities;
 using System.IO;
 using System.Drawing;
+using System.Threading.Tasks;
 
 namespace BDSA2017.Assignment06.Tests
 {
@@ -39,192 +40,208 @@ namespace BDSA2017.Assignment06.Tests
             Assert.False(true);
         }
         [Fact]
-        public async void TestUpdateCarInRaceAsync()
+        public async Task TestUpdateCarInRaceAsync()
         {
-            Car car = new Car() { Driver = "Mads", Name = "Suzuki" };
-
-            var track = new Track()
+            using (raceRepository)
             {
-                BestTime = 121213123,
-                LengthInMeters = 123214,
-                MaxCars = 50,
-                Name = "RaceTrack"
-            };
-            var race = new Race()
-            {
+                Car car = new Car() { Driver = "Mads", Name = "Suzuki" };
 
-                NumberOfLaps = 5,
-                PlannedEnd = new DateTime(1920, 11, 11),
-                PlannedStart = new DateTime(1920, 11, 11),
-                Track = track
-            };
-            var carInRace = new CarInRace() { Car = car, Race = race };
-            context.Add(carInRace);
-            context.SaveChanges();
-            var UpdatedCarInRaceInfo = new RaceCarDTO()
-            {
-                CarId = car.Id,
-                RaceId = race.Id,
-                EndPosition = 2,
-                FastestLap = 123123,
-                StartPosition = 1212,
-                TotalTime = 2121212
+                var track = new Track()
+                {
+                    BestTime = 121213123,
+                    LengthInMeters = 123214,
+                    MaxCars = 50,
+                    Name = "RaceTrack"
+                };
+                var race = new Race()
+                {
 
-            };
-            await raceRepository.UpdateCarInRaceAsync(UpdatedCarInRaceInfo);
-            Assert.Equal(UpdatedCarInRaceInfo.EndPosition, context.CarsInRace.Find(carInRace.RaceId, carInRace.CarId).EndPosition);
-            Assert.Equal(UpdatedCarInRaceInfo.FastestLap, context.CarsInRace.Find(carInRace.RaceId, carInRace.CarId).FastestLap);
-            Assert.Equal(UpdatedCarInRaceInfo.TotalTime, context.CarsInRace.Find(carInRace.RaceId, carInRace.CarId).TotalTime);
-            Assert.Equal(UpdatedCarInRaceInfo.StartPosition, context.CarsInRace.Find(carInRace.RaceId, carInRace.CarId).StartPosition);
+                    NumberOfLaps = 5,
+                    PlannedEnd = new DateTime(1920, 11, 11),
+                    PlannedStart = new DateTime(1920, 11, 11),
+                    Track = track
+                };
+                var carInRace = new CarInRace() { Car = car, Race = race };
+                await context.AddAsync(carInRace);
+                await context.SaveChangesAsync();
+                var UpdatedCarInRaceInfo = new RaceCarDTO()
+                {
+                    CarId = car.Id,
+                    RaceId = race.Id,
+                    EndPosition = 2,
+                    FastestLap = 123123,
+                    StartPosition = 1212,
+                    TotalTime = 2121212
+
+                };
+                await raceRepository.UpdateCarInRaceAsync(UpdatedCarInRaceInfo);
+                Assert.Equal(UpdatedCarInRaceInfo.EndPosition, context.CarsInRace.Find(carInRace.RaceId, carInRace.CarId).EndPosition);
+                Assert.Equal(UpdatedCarInRaceInfo.FastestLap, context.CarsInRace.Find(carInRace.RaceId, carInRace.CarId).FastestLap);
+                Assert.Equal(UpdatedCarInRaceInfo.TotalTime, context.CarsInRace.Find(carInRace.RaceId, carInRace.CarId).TotalTime);
+                Assert.Equal(UpdatedCarInRaceInfo.StartPosition, context.CarsInRace.Find(carInRace.RaceId, carInRace.CarId).StartPosition);
+            }
 
         }
         [Fact]
-        public async void TestUpdate()
+        public async Task TestUpdate()
         {
-            var track = new Track()
+            using (raceRepository)
             {
-                BestTime = 121213123,
-                LengthInMeters = 123214,
-                MaxCars = 50,
-                Name = "RaceTrack"
-            };
-            var race = new Race()
-            {
+                var track = new Track()
+                {
+                    BestTime = 121213123,
+                    LengthInMeters = 123214,
+                    MaxCars = 50,
+                    Name = "RaceTrack"
+                };
+                var race = new Race()
+                {
 
-                NumberOfLaps = 5,
-                PlannedEnd = new DateTime(1920, 11, 11),
-                PlannedStart = new DateTime(1920, 11, 11),
-                Track = track
-            };
-            var trackupdated = new Track()
-            {
-                BestTime = 12121312321121,
-                LengthInMeters = 1232142112,
-                MaxCars = 40,
-                Name = "RaceTrackupdated"
-            };
-            context.Add(race);
-            context.Add(trackupdated);
-            context.SaveChanges();
-            var RaceCreate = new RaceCreateDTO()
-            {
-                Id = race.Id,
-                NumberOfLaps = 5,
-                PlannedEnd = new DateTime(1920, 11, 11),
-                PlannedStart = new DateTime(1920, 11, 11),
-                TrackId = trackupdated.Id,
-                ActualEnd = new DateTime(1221, 1, 1),
-                ActualStart = new DateTime(2412, 2, 2)
-            };
-            await raceRepository.UpdateAsync(RaceCreate);
-            Assert.Equal(context.Races.Find(race.Id).Track, trackupdated);
+                    NumberOfLaps = 5,
+                    PlannedEnd = new DateTime(1920, 11, 11),
+                    PlannedStart = new DateTime(1920, 11, 11),
+                    Track = track
+                };
+                var trackupdated = new Track()
+                {
+                    BestTime = 12121312321121,
+                    LengthInMeters = 1232142112,
+                    MaxCars = 40,
+                    Name = "RaceTrackupdated"
+                };
+                context.Add(race);
+                context.Add(trackupdated);
+                await context.SaveChangesAsync();
+                var RaceCreate = new RaceCreateDTO()
+                {
+                    Id = race.Id,
+                    NumberOfLaps = 5,
+                    PlannedEnd = new DateTime(1920, 11, 11),
+                    PlannedStart = new DateTime(1920, 11, 11),
+                    TrackId = trackupdated.Id,
+                    ActualEnd = new DateTime(1221, 1, 1),
+                    ActualStart = new DateTime(2412, 2, 2)
+                };
+                await raceRepository.UpdateAsync(RaceCreate);
+                Assert.Equal((await context.Races.FindAsync(race.Id)).Track, trackupdated);
+            }
         }
         [Fact]
-        public async void TestUpdateRaceNotFound()
+        public async Task TestUpdateRaceNotFound()
         {
-            var race = new Race()
+            using (raceRepository)
             {
-                NumberOfLaps = 5,
-                PlannedEnd = new DateTime(1920, 11, 11),
-                PlannedStart = new DateTime(1920, 11, 11),
-            };
+                var race = new Race()
+                {
+                    NumberOfLaps = 5,
+                    PlannedEnd = new DateTime(1920, 11, 11),
+                    PlannedStart = new DateTime(1920, 11, 11),
+                };
 
-            var RaceCreate = new RaceCreateDTO()
-            {
-                Id = race.Id,
-                NumberOfLaps = 5,
-                PlannedEnd = new DateTime(1920, 11, 11),
-                PlannedStart = new DateTime(1920, 11, 1),
-                ActualEnd = new DateTime(1221, 1, 1),
-                ActualStart = new DateTime(2412, 2, 2)
-            };
+                var RaceCreate = new RaceCreateDTO()
+                {
+                    Id = race.Id,
+                    NumberOfLaps = 5,
+                    PlannedEnd = new DateTime(1920, 11, 11),
+                    PlannedStart = new DateTime(1920, 11, 1),
+                    ActualEnd = new DateTime(1221, 1, 1),
+                    ActualStart = new DateTime(2412, 2, 2)
+                };
 
-            Assert.Equal((false, "no race found"), await raceRepository.UpdateAsync(RaceCreate));
+                Assert.Equal((false, "no race found"), await raceRepository.UpdateAsync(RaceCreate));
+            
+            }
         }
 
 
         [Fact]
-        public async void TestRead()
+        public async Task TestRead()
         {
-            var track = new Track()
+            using (raceRepository)
             {
-                BestTime = 121213123,
-                LengthInMeters = 123214,
-                MaxCars = 50,
-                Name = "RaceTrack"
-            };
-            var race = new Race()
-            {
+                var track = new Track()
+                {
+                    BestTime = 121213123,
+                    LengthInMeters = 123214,
+                    MaxCars = 50,
+                    Name = "RaceTrack"
+                };
+                var race = new Race()
+                {
 
-                NumberOfLaps = 5,
-                PlannedEnd = new DateTime(1920, 11, 11),
-                PlannedStart = new DateTime(1920, 11, 11),
-                Track = track
-            };
-            context.Add(race);
-            context.SaveChanges();
-            var raceCreate = new RaceCreateDTO()
-            {
-                PlannedEnd = race.PlannedEnd,
-                PlannedStart = race.PlannedStart,
-                Id = race.Id,
-                ActualEnd = race.ActualEnd,
-                ActualStart = race.ActualStart,
-                NumberOfLaps = race.NumberOfLaps,
-                TrackId = race.Track.Id
-            };
+                    NumberOfLaps = 5,
+                    PlannedEnd = new DateTime(1920, 11, 11),
+                    PlannedStart = new DateTime(1920, 11, 11),
+                    Track = track
+                };
+                context.Add(race);
+                await context.SaveChangesAsync();
+                var raceCreate = new RaceCreateDTO()
+                {
+                    PlannedEnd = race.PlannedEnd,
+                    PlannedStart = race.PlannedStart,
+                    Id = race.Id,
+                    ActualEnd = race.ActualEnd,
+                    ActualStart = race.ActualStart,
+                    NumberOfLaps = race.NumberOfLaps,
+                    TrackId = race.Track.Id
+                };
 
-            Assert.Equal(raceCreate, await raceRepository.ReadAsync(race.Id));
+                Assert.Equal(raceCreate, await raceRepository.ReadAsync(race.Id));
+            }
 
         }
         [Fact]
-        public async void TestReadList()
+        public async Task TestReadList()
         {
-            Car car = new Car() { Driver = "Mads", Name = "Suzuki" };
-            Car car1 = new Car() { Driver = "Mads2", Name = "Suzuki" };
-            Car car2 = new Car() { Driver = "Mads3", Name = "Suzuki" };
-
-            var track = new Track()
+            using (raceRepository)
             {
-                BestTime = 121213123,
-                LengthInMeters = 123214,
-                MaxCars = 50,
-                Name = "RaceTrack"
-            };
-            var race = new Race()
-            {
+                Car car = new Car() { Driver = "Mads", Name = "Suzuki" };
+                Car car1 = new Car() { Driver = "Mads2", Name = "Suzuki" };
+                Car car2 = new Car() { Driver = "Mads3", Name = "Suzuki" };
 
-                NumberOfLaps = 5,
-                PlannedEnd = new DateTime(1920, 11, 11),
-                PlannedStart = new DateTime(1920, 11, 11),
-                Track = track
-            };
-            var carInRace = new CarInRace() { Car = car, Race = race, TotalTime = 120210 };
-            var carInRace2 = new CarInRace() { Car = car1, Race = race, TotalTime = 21314212421 };
-            var carInRace3 = new CarInRace() { Car = car2, Race = race, TotalTime = 214124214141 };
-            context.Add(carInRace);
-            context.Add(carInRace2);
-            context.Add(carInRace3);
-            context.SaveChanges();
-            var raceList = new RaceListDTO()
-            {
-                End = race.PlannedEnd,
-                Start = race.PlannedStart,
-                Id = race.Id,
-                MaxCars = race.Track.MaxCars,
-                NumberOfCars = 3,
-                NumberOfLaps = race.NumberOfLaps,
-                TrackName = race.Track.Name,
-                WinningCar = car.Name,
-                WinningDriver = car.Driver
-            };
+                var track = new Track()
+                {
+                    BestTime = 121213123,
+                    LengthInMeters = 123214,
+                    MaxCars = 50,
+                    Name = "RaceTrack"
+                };
+                var race = new Race()
+                {
 
-            Assert.Equal(new List<RaceListDTO> { raceList }, await raceRepository.ReadAsync());
+                    NumberOfLaps = 5,
+                    PlannedEnd = new DateTime(1920, 11, 11),
+                    PlannedStart = new DateTime(1920, 11, 11),
+                    Track = track
+                };
+                var carInRace = new CarInRace() { Car = car, Race = race, TotalTime = 120210 };
+                var carInRace2 = new CarInRace() { Car = car1, Race = race, TotalTime = 21314212421 };
+                var carInRace3 = new CarInRace() { Car = car2, Race = race, TotalTime = 214124214141 };
+                context.Add(carInRace);
+                context.Add(carInRace2);
+                context.Add(carInRace3);
+                await context.SaveChangesAsync();
+                var raceList = new RaceListDTO()
+                {
+                    End = race.PlannedEnd,
+                    Start = race.PlannedStart,
+                    Id = race.Id,
+                    MaxCars = race.Track.MaxCars,
+                    NumberOfCars = 3,
+                    NumberOfLaps = race.NumberOfLaps,
+                    TrackName = race.Track.Name,
+                    WinningCar = car.Name,
+                    WinningDriver = car.Driver
+                };
+
+                Assert.Equal(new List<RaceListDTO> { raceList }, await raceRepository.ReadAsync());
+            }
 
         }
 
         [Fact]
-        public async void TestRemoveCarFromRace()
+        public async Task TestRemoveCarFromRace()
         {
             using (raceRepository)
             {
@@ -246,16 +263,16 @@ namespace BDSA2017.Assignment06.Tests
                 };
                 var carInRace = new CarInRace() { Car = car, Race = race };
                 context.Add(carInRace);
-                context.SaveChanges();
+                await context.SaveChangesAsync();
                 await raceRepository.RemoveCarFromRaceAsync(car.Id, race.Id);
 
 
-                Assert.Null(context.CarsInRace.Find(carInRace.CarId, carInRace.RaceId));
+                Assert.Null(await context.CarsInRace.FindAsync(carInRace.CarId, carInRace.RaceId));
 
             }
         }
         [Fact]
-        public async void TestRemoveCarFromRaceReturnsCarDosntExist()
+        public async Task TestRemoveCarFromRaceReturnsCarDosntExist()
         {
             using (raceRepository)
             {
@@ -283,7 +300,7 @@ namespace BDSA2017.Assignment06.Tests
             }
         }
         [Fact]
-        public async void TestAddCarToRace()
+        public async Task TestAddCarToRace()
         {
             using (raceRepository)
             {
@@ -306,9 +323,9 @@ namespace BDSA2017.Assignment06.Tests
 
                 context.Cars.Add(car);
                 context.Races.Add(race);
-                context.SaveChanges();
+                await context.SaveChangesAsync();
                 await raceRepository.AddCarToRaceAsync(car.Id, race.Id, 5);
-                var carInRace = (from carInRaces in context.CarsInRace
+                var carInRace = (from carInRaces in context.CarsInRace.AsParallel()
                                  where carInRaces.CarId == car.Id && carInRaces.RaceId == race.Id
                                  select carInRaces).Count();
                 Assert.True(carInRace > 0);
@@ -316,7 +333,7 @@ namespace BDSA2017.Assignment06.Tests
             }
         }
         [Fact]
-        public async void TestAddCarToRaceFalseRaceHasStarted()
+        public async Task TestAddCarToRaceFalseRaceHasStarted()
         {
             using (raceRepository)
             {
@@ -339,7 +356,7 @@ namespace BDSA2017.Assignment06.Tests
                 };
                 context.Cars.Add(car);
                 context.Races.Add(race);
-                context.SaveChanges();
+                await context.SaveChangesAsync();
 
 
                 Assert.Equal((false, "Race or car not excisting or has started"), await raceRepository.AddCarToRaceAsync(car.Id, race.Id, 5));
@@ -347,7 +364,7 @@ namespace BDSA2017.Assignment06.Tests
             }
         }
         [Fact]
-        public async void TestCreateRace()
+        public async Task TestCreateRace()
         {
             using (raceRepository)
             {
@@ -359,7 +376,7 @@ namespace BDSA2017.Assignment06.Tests
                     Name = "RaceTrack"
                 };
                 context.Add(track);
-                context.SaveChanges();
+                await context.SaveChangesAsync();
                 var raceDTO = new RaceCreateDTO()
                 {
                     ActualEnd = new DateTime(1920, 11, 11),
@@ -370,14 +387,14 @@ namespace BDSA2017.Assignment06.Tests
                     TrackId = track.Id
                 };
 
-                Assert.NotNull(context.Races.Find(await raceRepository.CreateAsync(raceDTO)));
+                Assert.NotNull(await context.Races.FindAsync(await raceRepository.CreateAsync(raceDTO)));
 
 
             }
 
         }
         [Fact]
-        public async void TestCreateRaceFailsStarted()
+        public async Task TestCreateRaceFailsStarted()
         {
             using (raceRepository)
             {
@@ -389,7 +406,7 @@ namespace BDSA2017.Assignment06.Tests
                     Name = "RaceTrack"
                 };
                 context.Add(track);
-                context.SaveChanges();
+                await context.SaveChangesAsync();
                 RaceCreateDTO raceDTO = null;
 
                 Assert.Equal(0, await raceRepository.CreateAsync(raceDTO));
@@ -399,7 +416,7 @@ namespace BDSA2017.Assignment06.Tests
 
         }
         [Fact]
-        public async void TestDeleteRace()
+        public async Task TestDeleteRace()
         {
 
             using (raceRepository)
@@ -423,7 +440,7 @@ namespace BDSA2017.Assignment06.Tests
                 };
                 context.Tracks.Add(track);
                 context.Races.Add(race);
-                context.SaveChanges();
+                await context.SaveChangesAsync();
                 Assert.Equal((false, "Race was not found or hasnt started yet"), await raceRepository.DeleteAsync(race.Id));
 
             }
@@ -431,7 +448,7 @@ namespace BDSA2017.Assignment06.Tests
 
         }
         [Fact]
-        public async void TestDeleteRace2()
+        public async Task TestDeleteRace2()
         {
 
 
@@ -454,7 +471,7 @@ namespace BDSA2017.Assignment06.Tests
                 };
                 context.Tracks.Add(track);
                 context.Races.Add(race);
-                context.SaveChanges();
+                await context.SaveChangesAsync();
                 Assert.Equal((true, ""), await raceRepository.DeleteAsync(race.Id));
 
             }

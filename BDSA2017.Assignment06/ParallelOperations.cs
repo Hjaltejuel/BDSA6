@@ -10,15 +10,15 @@ namespace BDSA2017.Assignment06
     {
         public static ICollection<long> Squares(long lowerBound, long upperBound)
         {
-            ConcurrentQueue<long> ConcurrentQueue = new ConcurrentQueue<long>();
+            BlockingCollection<long> Collection = new BlockingCollection<long>();
             Parallel.For(lowerBound, upperBound+1, i =>
              {
 
                  long x = (long)Math.Pow(i, 2);
-                 ConcurrentQueue.Enqueue((long)Math.Pow(i, 2));
+                 Collection.Add((long)Math.Pow(i, 2));
                
              });
-            long[] converted = ConcurrentQueue.ToArray();
+            long[] converted = Collection.ToArray();
             Array.Sort(converted);
             return converted;
         }

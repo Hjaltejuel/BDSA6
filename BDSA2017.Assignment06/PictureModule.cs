@@ -19,6 +19,7 @@ namespace BDSA2017.Assignment06
                 image.Mutate(x => x
                      .Resize(options));
                 image.Save(outputFile);
+                
             }
         }
     }
